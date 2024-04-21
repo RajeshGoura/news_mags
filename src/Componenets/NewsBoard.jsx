@@ -8,7 +8,17 @@ const NewsBoard = ({ category }) => {
     let url = `https://newsapi.org/v2/top-headlines?country=in&category=${category}&apiKey=9c0e2217ca60409a9eb537b8ee2f9fbd`;
     fetch(url)
       .then((response) => response.json())
-      .then((data) => setArticles(data.articles));
+      .then((data) => {
+        if (data.articles) {
+          setArticles(data.articles);
+        } else {
+          console.error('Articles data is undefined');
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        // Handle errors gracefully, display an error message or retry fetching data
+      });
   }, [category]);
 
   return (
@@ -17,7 +27,7 @@ const NewsBoard = ({ category }) => {
         Latest <span className="badge bg-danger">News</span>
       </h2>
       {/* Conditionally render the articles only when it's not empty */}
-      {articles.length > 0 &&
+      {articles && articles.length > 0 &&
         articles.map((news, index) => (
           <NewsItem
             key={index}
